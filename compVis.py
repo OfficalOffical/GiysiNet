@@ -6,31 +6,39 @@ import cv2
 import tensorflow as tf
 import keras
 from keras import Model
-from keras.applications.resnet import ResNet50,preprocess_input, decode_predictions
+import requests
+from keras.applications.resnet import ResNet50, preprocess_input, decode_predictions
 from keras.preprocessing import image
 from keras.layers import GlobalMaxPooling2D
 import matplotlib.pyplot as plt
-
+from keras.datasets import fashion_mnist
+import pandas as pd
 
 def getImageFromDest(datasetPath):
-    tempImage = np.array([])
-    image =np.array([])
+    tempImage = []
+
+
     w = 128
     h = 128
     resizeRate = (w, h)
 
     for i in os.listdir(datasetPath):
-        tempImage.append([cv2.imread(file) for file in glob.glob(datasetPath + "/" + i + "/*.jpg")])
+        for file in  glob.glob(datasetPath + "/" + i + "/*.jpg"):
+            tempImage.append(cv2.resize(cv2.imread(file),resizeRate))
+
+    """ 
+    tempSizeHolder = 0
     for i in tempImage:
-        image.append([cv2.resize(temp, resizeRate) for temp in i])
+        image.append([cv2.resize(temp, resizeRate) for temp in i])"""
 
-    tempImage
-
+    image = np.array(tempImage)
     return image
 
-def showImage(img,i,j):
-    cv2.imshow("a", img[i][j])
+
+def showImage(img, i):
+    cv2.imshow("a", img[i])
     cv2.waitKey(0)
+
 
 def kerasModel(img):
     img_width, img_height, _ = 128, 128, 3  # load_image(df.iloc[0].image).shape
@@ -49,21 +57,19 @@ def kerasModel(img):
 
     model.summary()
 
-def embedding (model,img):
 
-    a = np.array(img,dtype=object)
+def embedding(model, img):
+    a = np.array(img, dtype=object)
     a = a.flatten()
     x = image.img_to_array(a)
     print(x)
 
-
-
-
-
-
-
-
-
+def getImageFromJSON(jsonPath):
+    jsonPath = jsonPath + "/train_no_dup.json"
+    temp = pd.read_json(jsonPath)
+    temp = temp.dropna()
+    temp = temp.drop(labels=["views","likes","date","desc"],axis=1)
+    print(temp.head())
 
 
 

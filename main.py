@@ -2,21 +2,13 @@ from compVis import *
 
 
 datasetPath = "C:/Users/Sefa/Desktop/db"
+jsonPath = "C:/Users/Sefa/Desktop/dbJson"
 
 
 
+"""img = getImageFromDest(datasetPath)"""
 
-img = getImageFromDest(datasetPath)
-
-
-
-#kerasModel(img)
-temp = img.flatten()
-
-print(temp[0][1])
-
-
-
+img = getImageFromJSON(jsonPath)
 
 
 
