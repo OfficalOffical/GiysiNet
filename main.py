@@ -6,9 +6,10 @@ jsonPath = "C:/Users/Sefa/Desktop/dbJson"
 
 
 
-"""img = getImageFromDest(datasetPath)"""
+#img = getImageFromDest(datasetPath)
+
 
 img = getImageFromJSON(jsonPath)
 
-
+labeledImg = getLabeled(img)
 

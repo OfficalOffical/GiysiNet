@@ -1,4 +1,5 @@
 import glob
+import urllib.request
 
 import numpy as np
 import os
@@ -62,18 +63,47 @@ def embedding(model, img):
     a = np.array(img, dtype=object)
     a = a.flatten()
     x = image.img_to_array(a)
-    print(x)
+
 
 def getImageFromJSON(jsonPath):
     jsonPath = jsonPath + "/train_no_dup.json"
-    temp = pd.read_json(jsonPath)
-    temp = temp.dropna()
-    temp = temp.drop(labels=["views","likes","date","desc"],axis=1)
-    print(temp.head())
+    temp = pd.read_json(jsonPath) # <<< burayı düzelt
+    temp = temp.head(100)
+    temp = temp.drop(labels=["name","image","set_url","views", "likes", "date", "desc"], axis=1)
+    temp = temp.sort_values(by=['set_id'])
+    return temp
+
+"""def downloadImg():
+    urllib.request.urlretrieve("http://ak1.polyvoreimg.com/cgi/img-set/cid/214181831/id/El8a99fQ5hG4HrPFO4xqOQ/size/y.jpg", "00000001.jpg")"""
+
+
+def getLabeled(img):
 
 
 
+    """datasetPath = "C:/Users/Sefa/Desktop/db"
 
+    tempImage = []
+
+    w = 128
+    h = 128
+    resizeRate = (w, h)
+
+    for i in os.listdir(datasetPath):
+        if else <<
+        for file in glob.glob(datasetPath + "/" + i + "/*.jpg"):
+            tempImage.append(cv2.resize(cv2.imread(file), resizeRate)"""
+
+    for x in range(len(img)):
+        for items in img["items"][x]:
+            return 0
+        #print(img["set_id"][x])
+        print(img["items"][x][0]['categoryid'])
+
+    return 0
+
+#http://www.polyvore.com/being_vans_shoe_model_with/set?id=120161271
+#http://ak1.polyvoreimg.com/cgi/img-set/cid/214181831/id/El8a99fQ5hG4HrPFO4xqOQ/size/y.jpg
 
 
 
