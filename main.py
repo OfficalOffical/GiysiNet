@@ -2,14 +2,18 @@ from compVis import *
 
 
 datasetPath = "C:/Users/Sefa/Desktop/db"
-jsonPath = "C:/Users/Sefa/Desktop/dbJson"
+csvPath = "C:/Users/Sefa/Desktop/outfit_data_cleaned.csv"
 
 
 
 #img = getImageFromDest(datasetPath)
 
 
-img = getImageFromJSON(jsonPath)
+img = getImageFromCSV(csvPath)
 
-labeledImg = getLabeled(img)
+#labeledImg = getLabeled(img)
+
+getCsv(csvPath)
+
+
 

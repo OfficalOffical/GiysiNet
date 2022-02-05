@@ -42,7 +42,7 @@ def showImage(img, i):
 
 
 def kerasModel(img):
-    img_width, img_height, _ = 128, 128, 3  # load_image(df.iloc[0].image).shape
+    img_width, img_height, _ = 28, 28, 3  # load_image(df.iloc[0].image).shape
 
     # Pre-Trained Model
     base_model = ResNet50(weights='imagenet',
@@ -65,13 +65,18 @@ def embedding(model, img):
     x = image.img_to_array(a)
 
 
-def getImageFromJSON(jsonPath):
-    jsonPath = jsonPath + "/train_no_dup.json"
-    temp = pd.read_json(jsonPath) # <<< burayı düzelt
-    temp = temp.head(100)
-    temp = temp.drop(labels=["name","image","set_url","views", "likes", "date", "desc"], axis=1)
-    temp = temp.sort_values(by=['set_id'])
+def getImageFromCSV(csvPath):
+    temp = pd.read_csv(csvPath)  # <<< burayı düzelt
+
+
+    temp = temp.drop(labels=["id","sub_category","name","all"], axis=1)
+    temp = temp.sort_values(by=['set_id', 'index'])
+    print(temp)
     return temp
+
+def getCsv(csvPath):
+    return 0
+
 
 """def downloadImg():
     urllib.request.urlretrieve("http://ak1.polyvoreimg.com/cgi/img-set/cid/214181831/id/El8a99fQ5hG4HrPFO4xqOQ/size/y.jpg", "00000001.jpg")"""
@@ -93,7 +98,8 @@ def getLabeled(img):
         if else <<
         for file in glob.glob(datasetPath + "/" + i + "/*.jpg"):
             tempImage.append(cv2.resize(cv2.imread(file), resizeRate)"""
-
+    # skip the first input "0"
+    # if resim sayısı != label sayısı ignore that dic pic
     for x in range(len(img)):
         for items in img["items"][x]:
             return 0
