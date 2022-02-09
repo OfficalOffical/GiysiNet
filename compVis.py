@@ -10,39 +10,56 @@ from keras import Model
 import requests
 from keras.applications.resnet import ResNet50, preprocess_input, decode_predictions
 from keras.preprocessing import image
-from keras.layers import GlobalMaxPooling2D
+from keras.layers import GlobalMaxPooling2D, Dense
 import matplotlib.pyplot as plt
 from keras.datasets import fashion_mnist
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
-def getImageFromDest(datasetPath):
+def getImageFromDest(datasetPath,csv):
+
     tempImage = []
 
-
-    w = 128
-    h = 128
+    w = 32
+    h = 32
     resizeRate = (w, h)
 
-    for i in os.listdir(datasetPath):
-        for file in  glob.glob(datasetPath + "/" + i + "/*.jpg"):
-            tempImage.append(cv2.resize(cv2.imread(file),resizeRate))
+    for i in range(len(csv)):
+            file = datasetPath+"/"+str(csv['set_id'][i]) + "/" + str(csv['index'][i])+".jpg"
+            tempImage.append(cv2.resize(cv2.imread(file), resizeRate))
 
-    """ 
-    tempSizeHolder = 0
-    for i in tempImage:
-        image.append([cv2.resize(temp, resizeRate) for temp in i])"""
 
     image = np.array(tempImage)
     return image
 
 
-def showImage(img, i):
-    cv2.imshow("a", img[i])
-    cv2.waitKey(0)
 
 
-def kerasModel(img):
-    img_width, img_height, _ = 28, 28, 3  # load_image(df.iloc[0].image).shape
+
+def getImageFromCSV(csvPath):
+    csv,imarr = getCsv(csvPath)
+    modelKeras = createKerasModel()
+
+    trainX, testX, trainY, testY = train_test_split(imarr,csv["categoryx_id"],test_size=0.3)
+    # u can devide it to 255 to make it 0-1 in further i guess dk
+
+    modelKeras.compile(
+        optimizer="rmsprop",
+        loss="sparse_categorical_crossentropy",
+        metrics=["accuracy"],
+    )
+
+
+    modelKeras.fit(trainX,trainY,epochs=3)
+    modelKeras.evaluate(testX,testY)
+
+
+
+    return csv
+
+def createKerasModel():
+    # Input Shape
+    img_width, img_height, _ = 32, 32, 3
 
     # Pre-Trained Model
     base_model = ResNet50(weights='imagenet',
@@ -53,63 +70,25 @@ def kerasModel(img):
     # Add Layer Embedding
     model = keras.Sequential([
         base_model,
-        GlobalMaxPooling2D()
+
+
     ])
-
-    model.summary()
-
-
-def embedding(model, img):
-    a = np.array(img, dtype=object)
-    a = a.flatten()
-    x = image.img_to_array(a)
+    model.add(Dense(4526, activation='softmax'))
 
 
-def getImageFromCSV(csvPath):
-    temp = pd.read_csv(csvPath)  # <<< burayı düzelt
+    return model
 
-
-    temp = temp.drop(labels=["id","sub_category","name","all"], axis=1)
-    temp = temp.sort_values(by=['set_id', 'index'])
-    print(temp)
-    return temp
 
 def getCsv(csvPath):
-    return 0
+    datasetPath = "E:/db"
+    temp = pd.read_csv(csvPath,nrows=10000)  # <<< burayı düzelt
+    temp = temp.drop(labels=["id","color", "sub_category", "name", "all"], axis=1)
+    temp = temp.sort_values(by=['set_id', 'index'])
+    imageArray = getImageFromDest(datasetPath,temp)
+
+    return temp,imageArray
 
 
-"""def downloadImg():
-    urllib.request.urlretrieve("http://ak1.polyvoreimg.com/cgi/img-set/cid/214181831/id/El8a99fQ5hG4HrPFO4xqOQ/size/y.jpg", "00000001.jpg")"""
-
-
-def getLabeled(img):
-
-
-
-    """datasetPath = "C:/Users/Sefa/Desktop/db"
-
-    tempImage = []
-
-    w = 128
-    h = 128
-    resizeRate = (w, h)
-
-    for i in os.listdir(datasetPath):
-        if else <<
-        for file in glob.glob(datasetPath + "/" + i + "/*.jpg"):
-            tempImage.append(cv2.resize(cv2.imread(file), resizeRate)"""
-    # skip the first input "0"
-    # if resim sayısı != label sayısı ignore that dic pic
-    for x in range(len(img)):
-        for items in img["items"][x]:
-            return 0
-        #print(img["set_id"][x])
-        print(img["items"][x][0]['categoryid'])
-
-    return 0
-
-#http://www.polyvore.com/being_vans_shoe_model_with/set?id=120161271
-#http://ak1.polyvoreimg.com/cgi/img-set/cid/214181831/id/El8a99fQ5hG4HrPFO4xqOQ/size/y.jpg
 
 
 
