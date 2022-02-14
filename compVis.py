@@ -36,12 +36,12 @@ def getImageFromCSV(csvPath):
     csv,imarr = getCsv(csvPath)
     modelKeras = createKerasModel()
 
-    print(csv["categoryx_id"])
+    csv = editCsv.getAndCleanCsv(csv)
 
     trainX, testX, trainY, testY = train_test_split(imarr,csv["categoryx_id"],test_size=0.3,random_state=42)
     # u can devide it to 255 to make it 0-1 in further i guess dk
 
-    print(editCsv.labelNormalizer(trainY))
+
 
 
 
@@ -64,7 +64,7 @@ def createKerasModel():
         Dense(512, activation='relu'),
         Dense(128, activation='relu'),
         Dense(64, activation='relu'),
-        Dense(5000, activation='softmax')
+        Dense(164, activation='softmax')
 
     ])
 

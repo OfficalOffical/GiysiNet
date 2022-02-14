@@ -18,37 +18,23 @@ def notAvailable(newList, j):
 
 
 
-def getAndCleanCsv(csvPath):
-    temp = pd.read_csv(csvPath, nrows=200000)
+def getAndCleanCsv(temp):
+
 
     with open('C:/Users/Sefa/Desktop/oldCategory.txt') as f:
         lines = f.readlines()
 
-    counter = 0
-    newList = []
-    tempStr = ""
+
+
 
     for x in range(len(temp["categoryx_id"])):
-        for j in lines:
-            j = j.split()
-            if (int(temp["categoryx_id"][x]) == int(j[0])):
-                for k in range(len(j)):
-                    if (k>0 and notAvailable(newList,j)):
-                        if(k == 1):
-                            tempStr += str(j[k])
-                        else:
-                            tempStr += " " + str(j[k])
+        for j in range(len(lines)):
+            tempStr = lines[j].split()
+            if (int(temp["categoryx_id"][x]) == int(tempStr[0])):
+                temp["categoryx_id"][x] = j
 
-                if (tempStr != ""):
-                    newList.append(tempStr)
+    return temp
 
-                print(len(newList))
-
-                tempStr=""
-
-                """  
-                temp=None"""
-    return newList
 
 
 
