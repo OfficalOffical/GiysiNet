@@ -9,6 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
+import editCsv
 
 width = 28
 height = 28
@@ -35,16 +36,25 @@ def getImageFromCSV(csvPath):
     csv,imarr = getCsv(csvPath)
     modelKeras = createKerasModel()
 
+    print(csv["categoryx_id"])
+
     trainX, testX, trainY, testY = train_test_split(imarr,csv["categoryx_id"],test_size=0.3,random_state=42)
     # u can devide it to 255 to make it 0-1 in further i guess dk
 
+    print(editCsv.labelNormalizer(trainY))
+
+
+
+    """
+    print(trainX.shape)
+    print("A")
 
     modelKeras.compile(loss='sparse_categorical_crossentropy',optimizer='Adam',metrics=['accuracy'])
 
     modelKeras.fit(trainX,trainY,epochs=3)
     modelKeras.evaluate(testX,testY)
 
-
+    """
 
     return csv
 
