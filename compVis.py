@@ -1,8 +1,9 @@
 
 import cv2
+from keras.applications.resnet import ResNet50
 
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Dense, Dropout, Flatten, Conv2D
 
 import numpy as np
 import pandas as pd
@@ -11,8 +12,8 @@ from sklearn.model_selection import train_test_split
 
 import editCsv
 
-width = 28
-height = 28
+width = 32
+height = 32
 
 def getImageFromDest(datasetPath,csv):
 
@@ -45,29 +46,27 @@ def getImageFromCSV(csvPath):
 
 
 
-    """
-    print(trainX.shape)
-    print("A")
+    print(trainX.shape[1])
 
-    modelKeras.compile(loss='sparse_categorical_crossentropy',optimizer='Adam',metrics=['accuracy'])
 
-    modelKeras.fit(trainX,trainY,epochs=3)
+    modelKeras.compile(loss='sparse_categorical_crossentropy',optimizer='Adam',metrics=['mean_absolute_error'])
+
+    modelKeras.fit(trainX,trainY,epochs=10)
     modelKeras.evaluate(testX,testY)
 
-    """
 
     return csv
 
 def createKerasModel():
     # Input Shape
+    base_model = ResNet50(weights='imagenet',
+                          include_top=False,
+                          input_shape=(width, height, 3))
+    base_model.trainable = False
+
     model = Sequential([
-        Dense(512, activation='relu'),
-        Dense(128, activation='relu'),
-        Dense(64, activation='relu'),
-        Dense(164, activation='softmax')
-
+        base_model
     ])
-
 
 
 
