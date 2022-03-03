@@ -1,5 +1,6 @@
 
 import cv2
+import keras
 from keras.applications.resnet_v2 import ResNet50V2
 
 from keras.models import Sequential
@@ -16,9 +17,9 @@ import editCsv
 
 
 
-width = 128
-height = 128
-nRowSetter = 1000
+width = 64
+height = 64
+nRowSetter = 4000
 
 
 
@@ -28,7 +29,7 @@ def getImageFromCSV(csvPath):
 
 
 
-
+    print(imarr.shape)
 
 
     trainX, testX, trainY, testY = train_test_split(imarr,csv["categoryx_id"],test_size=0.3,random_state=42)
@@ -37,16 +38,16 @@ def getImageFromCSV(csvPath):
 
     print(modelKeras.summary())
 
-    plt.figure(figsize=(7,20))
 
 
+    print(trainX.shape,testX.shape,trainY.shape,testY.shape)
 
 
-    modelKeras.compile(loss='sparse_categorical_crossentropy',optimizer='Adam',metrics=['accuracy'])
+    modelKeras.compile(loss='sparse_categorical_crossentropy',optimizer='Adam',metrics=['sparse_categorical_accuracy'])
 
-    modelKeras.fit(trainX,trainY,epochs=10)
+    modelKeras.fit(trainX,trainY,epochs=20)
     modelKeras.evaluate(testX,testY)
-    print("TrainX : ",trainX.shape)
+
 
     return csv
 
@@ -59,16 +60,54 @@ def createKerasModel():
     base_model.trainable = False
 
     model = Sequential([
+        keras.Input(shape=(width,height,3)),
+        MaxPooling2D(pool_size=(2, 2)),
+        Conv2D(2048, (8, 8), activation="relu"),
+        Dropout(0.2),
+
+        MaxPooling2D(pool_size=(2, 2)),
+
+        Conv2D(1024, (6, 6), activation='relu'),
+
+        Conv2D(512, (4, 4), activation='relu'),
+
+        Conv2D(256, (3, 3), activation='relu'),
+
+        Conv2D(128, (2, 2), activation='relu'),
+
+        Dense(5, activation="softmax"),
+
+    ])
+    model2 = Sequential([
         base_model,
-        Conv2D(128, (2, 2), activation="relu"),
-        Conv2D(64, (2, 2), activation="relu"),
-        Conv2D(32, (2, 2), activation="relu"),
-        Dense(164, activation="softmax")
+
+        Conv2D(1024, (2, 2), activation='relu'),
+
+        Dense(5, activation="softmax"),
     ])
 
+    """
+          Conv2D(1024, (2, 2), activation='relu'),
+
+          Conv2D(512, (1, 1), activation='relu'),
+
+          Conv2D(256, (1, 1), activation='relu'),
+
+          """
 
 
-    return model
+
+    """ 
+         Conv2D(2048, (1, 1), activation="relu"),
+         Dropout(0.2),
+         Conv2D(1024, (1, 1), activation='relu'),
+         Dropout(0.2),
+         Conv2D(512,  (1, 1), activation='relu'),
+         Dropout(0.2),
+         Conv2D(216,  (1, 1), activation='relu'),
+    """
+
+    return model2
 
 
 

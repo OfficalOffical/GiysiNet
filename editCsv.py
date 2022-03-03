@@ -55,87 +55,63 @@ def getAndCleanCsv(csvPath,w,h,nRowSetter):
     temp,imgArr = getCsv(csvPath,w,h,nRowSetter)
 
 
-
-
+    tempHolder =0
     print("Normalising Dataset Started")
     with open('C:/Users/Sefa/Desktop/oldCategory.txt') as f:
         lines = f.readlines()
 
     for x in range(len(temp["categoryx_id"])):
-        if(labelNormaliser(temp["categoryx_id"][x]) == False):
-            temp.drop(x,axis = 0, inplace = True)
-            imgArr = np.delete(imgArr,x,axis=0)
+        for j in range(len(lines)):
+            tempStr = lines[j].split()
+            if (int(temp["categoryx_id"][x]) == int(tempStr[0])):
+                temp["categoryx_id"][x] = j
+        if(labelNormaliserMini(temp["categoryx_id"][x]) == False):
+            temp.drop(x, axis=0, inplace=True)
+            imgArr = np.delete(imgArr, x - tempHolder, axis=0)
+            tempHolder += 1
 
-
-        else:
-            for j in range(len(lines)):
-                tempStr = lines[j].split()
-                if (int(temp["categoryx_id"][x]) == int(tempStr[0])):
-                    temp["categoryx_id"][x] = j
-
-    print("Normalising Dataset Finished")
-
-    plt.figure(figsize=(7,20))
+    plt.figure(figsize=(7, 25))
     temp.categoryx_id.value_counts().sort_values().plot(kind='barh')
     plt.show()
 
+    for x,y in temp["categoryx_id"].items():
+        temp["categoryx_id"][x] = labelNormaliserNum(temp["categoryx_id"][x])
+
+
+
+
+    print("Normalising Dataset Finished")
+
+
+
     return temp,imgArr
 
-def labelNormaliser(datasetInput):
+
+def labelNormaliserMini(datasetInput):
     datasetInput = int(datasetInput)
-
-
-
     switcher = {
-        64 : True,
-        37 : True,
-        62 : True,
-        11 : True,
-        57 : True,
-        261 : True,
-        43 : True,
-        46 : True,
-        38 : True,
-        65 : True,
-        25 : True,
-        49 : True,
-        19 : True,
-        4 : True,
-        237 : True,
-        24 : True,
-        318 : True,
-        29 : True,
-        21 : True,
-        55 : True,
-        9 : True,
-        17 : True,
-        36 : True,
-        259 : True,
-        61 : True,
-        28 : True,
-        2 : True,
-        5 : True,
-        8 : True,
-        47 : True,
-        41 : True,
-        27 : True,
-        236 : True,
-        42 : True,
-        240 : True,
-        4495 : True,
-        18 : True,
-        241 : True,
-        60 : True,
-        40 : True,
-        4428 : True,
-        52 : True,
-        3 : True,
-        265 : True,
-        6 : True,
-
+        46: True,
+        26: True,
+        45: True,
+        76: True,
+        42: True,
 
     }
     return switcher.get(datasetInput,False)
+
+def labelNormaliserNum(datasetInput):
+    datasetInput = int(datasetInput)
+    switcher = {
+        46: 1,
+        26: 2,
+        45: 3,
+        76: 4,
+        42: 5,
+
+    }
+    return switcher.get(datasetInput,False)
+
+
 
 
 
