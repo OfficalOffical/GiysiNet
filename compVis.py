@@ -45,7 +45,7 @@ def getImageFromCSV(csvPath):
 
     modelKeras.compile(loss='sparse_categorical_crossentropy',optimizer='Adam',metrics=['sparse_categorical_accuracy'])
 
-    modelKeras.fit(trainX,trainY,epochs=20)
+    modelKeras.fit(trainX,trainY,epochs=15)
     modelKeras.evaluate(testX,testY)
 
 
@@ -75,7 +75,7 @@ def createKerasModel():
 
         Conv2D(128, (2, 2), activation='relu'),
 
-        Dense(5, activation="softmax"),
+        Dense(164, activation="softmax"),
 
     ])
     model2 = Sequential([
@@ -107,7 +107,7 @@ def createKerasModel():
          Conv2D(216,  (1, 1), activation='relu'),
     """
 
-    return model2
+    return model
 
 
 

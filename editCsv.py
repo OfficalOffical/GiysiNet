@@ -65,19 +65,11 @@ def getAndCleanCsv(csvPath,w,h,nRowSetter):
             tempStr = lines[j].split()
             if (int(temp["categoryx_id"][x]) == int(tempStr[0])):
                 temp["categoryx_id"][x] = j
-        if(labelNormaliserMini(temp["categoryx_id"][x]) == False):
-            temp.drop(x, axis=0, inplace=True)
-            imgArr = np.delete(imgArr, x - tempHolder, axis=0)
-            tempHolder += 1
+
 
     plt.figure(figsize=(7, 25))
     temp.categoryx_id.value_counts().sort_values().plot(kind='barh')
     plt.show()
-
-    for x,y in temp["categoryx_id"].items():
-        temp["categoryx_id"][x] = labelNormaliserNum(temp["categoryx_id"][x])
-
-
 
 
     print("Normalising Dataset Finished")
@@ -85,6 +77,16 @@ def getAndCleanCsv(csvPath,w,h,nRowSetter):
 
 
     return temp,imgArr
+
+
+
+
+
+
+
+
+
+
 
 
 def labelNormaliserMini(datasetInput):
