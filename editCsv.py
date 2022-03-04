@@ -44,7 +44,7 @@ def getCsv(csvPath,w,h,nRowSetter):
 
 
     temp = temp.drop(labels=["id","color", "sub_category", "name", "all"], axis=1)
-    temp = temp.sort_values(by=['set_id', 'index'])
+    temp = temp.sort_values(by=['set_id', 'index'],ignore_index=True)
     imageArray = getImageFromDest(datasetPath,temp,w,h)
     print("Finished reading images")
     return temp,imageArray
@@ -54,8 +54,8 @@ def getAndCleanCsv(csvPath,w,h,nRowSetter):
 
     temp,imgArr = getCsv(csvPath,w,h,nRowSetter)
 
-
     tempHolder =0
+
     print("Normalising Dataset Started")
     with open('C:/Users/Sefa/Desktop/oldCategory.txt') as f:
         lines = f.readlines()
@@ -70,6 +70,9 @@ def getAndCleanCsv(csvPath,w,h,nRowSetter):
     plt.figure(figsize=(7, 25))
     temp.categoryx_id.value_counts().sort_values().plot(kind='barh')
     plt.show()
+
+
+
 
 
     print("Normalising Dataset Finished")

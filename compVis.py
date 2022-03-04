@@ -14,12 +14,14 @@ from tensorflow.python.keras.layers import GlobalAveragePooling2D
 
 import editCsv
 
+from keras.datasets import mnist
 
 
 
-width = 64
-height = 64
-nRowSetter = 4000
+
+width = 128
+height = 128
+nRowSetter = 1000
 
 
 
@@ -29,7 +31,7 @@ def getImageFromCSV(csvPath):
 
 
 
-    print(imarr.shape)
+
 
 
     trainX, testX, trainY, testY = train_test_split(imarr,csv["categoryx_id"],test_size=0.3,random_state=42)
@@ -49,6 +51,22 @@ def getImageFromCSV(csvPath):
     modelKeras.evaluate(testX,testY)
 
 
+    """  
+    mnist %99 acc
+    (train_X, train_y), (test_X, test_y) = mnist.load_data()
+
+    print(modelKeras.summary())
+
+
+    print(train_X.shape,train_y.shape,test_X.shape,test_y.shape)
+
+
+    modelKeras.compile(loss='sparse_categorical_crossentropy',optimizer='Adam',metrics=['sparse_categorical_accuracy'])
+
+    modelKeras.fit(train_X,train_y,epochs=15)
+    modelKeras.evaluate(test_X,test_y)"""
+
+
     return csv
 
 def createKerasModel():
@@ -62,30 +80,59 @@ def createKerasModel():
     model = Sequential([
         keras.Input(shape=(width,height,3)),
         MaxPooling2D(pool_size=(2, 2)),
+
         Conv2D(2048, (8, 8), activation="relu"),
-        Dropout(0.2),
 
         MaxPooling2D(pool_size=(2, 2)),
 
         Conv2D(1024, (6, 6), activation='relu'),
 
+        MaxPooling2D(pool_size=(2, 2)),
+
         Conv2D(512, (4, 4), activation='relu'),
 
         Conv2D(256, (3, 3), activation='relu'),
 
-        Conv2D(128, (2, 2), activation='relu'),
+        Flatten(), # Is it mandatory ? end to end conv2d ?
 
         Dense(164, activation="softmax"),
-
+        #1000 -> loss 3.85 \ acc 0.09
     ])
+    """
     model2 = Sequential([
         base_model,
 
-        Conv2D(1024, (2, 2), activation='relu'),
+        Conv2D(2048, (1, 1), activation="relu"),
+        Dropout(0.2),
+        Conv2D(1024, (1, 1), activation='relu'),
+        Dropout(0.2),
+        Conv2D(512, (1, 1), activation='relu'),
+        Dropout(0.2),
+        Conv2D(216, (1, 1), activation='relu'),
 
-        Dense(5, activation="softmax"),
+        Flatten(),  # Is it mandatory ? end to end conv2d ?
+
+        Dense(164, activation="softmax"),
     ])
+    """
+    """
+    model3 = Sequential([
 
+        keras.Input((28,28,1)),
+        Conv2D(32, kernel_size=(3, 3), activation="relu"),
+        MaxPooling2D(pool_size=(2, 2)),
+        Conv2D(64, kernel_size=(3, 3), activation="relu"),
+        MaxPooling2D(pool_size=(2, 2)),
+        Flatten(),
+        Dropout(0.5),
+        Dense(27, activation="softmax"),
+
+
+
+
+
+    ])
+    """
     """
           Conv2D(1024, (2, 2), activation='relu'),
 
@@ -98,13 +145,7 @@ def createKerasModel():
 
 
     """ 
-         Conv2D(2048, (1, 1), activation="relu"),
-         Dropout(0.2),
-         Conv2D(1024, (1, 1), activation='relu'),
-         Dropout(0.2),
-         Conv2D(512,  (1, 1), activation='relu'),
-         Dropout(0.2),
-         Conv2D(216,  (1, 1), activation='relu'),
+     
     """
 
     return model
