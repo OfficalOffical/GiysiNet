@@ -54,7 +54,9 @@ def getAndCleanCsv(csvPath,w,h,nRowSetter):
 
     temp,imgArr = getCsv(csvPath,w,h,nRowSetter)
 
-    tempHolder =0
+    tempHolder =[]
+
+
 
     print("Normalising Dataset Started")
     with open('C:/Users/Sefa/Desktop/oldCategory.txt') as f:
@@ -65,17 +67,35 @@ def getAndCleanCsv(csvPath,w,h,nRowSetter):
             tempStr = lines[j].split()
             if (int(temp["categoryx_id"][x]) == int(tempStr[0])):
                 temp["categoryx_id"][x] = j
+        if(labelNormaliserMini(temp["categoryx_id"][x]) == False):
+            temp.drop(x, axis=0,inplace = True)
+            tempHolder.append(x)
+
+
+
+    print(imgArr.shape)
+    imgArr = np.delete(imgArr, tempHolder,axis=0)
+    print(imgArr.shape)
+
+
+
+
+    """plt.figure(figsize=(7, 25))
+    temp.categoryx_id.value_counts().sort_values().plot(kind='barh')
+    plt.show()"""
+
+    for x,y in temp["categoryx_id"].items():
+        temp["categoryx_id"][x] = labelNormaliserNum(temp["categoryx_id"][x])
+
+
+    print("Normalising Dataset Finished")
+
 
 
     plt.figure(figsize=(7, 25))
     temp.categoryx_id.value_counts().sort_values().plot(kind='barh')
     plt.show()
 
-
-
-
-
-    print("Normalising Dataset Finished")
 
 
 
@@ -86,7 +106,12 @@ def getAndCleanCsv(csvPath,w,h,nRowSetter):
 
 
 
+def imShowWithCsv(temp,imgArr,a):
+    print(temp.head(a))
 
+    for x in range(a):
+        cv2.imshow("a", imgArr[x])
+        cv2.waitKey(0)
 
 
 
@@ -96,10 +121,8 @@ def labelNormaliserMini(datasetInput):
     datasetInput = int(datasetInput)
     switcher = {
         46: True,
-        26: True,
-        45: True,
         76: True,
-        42: True,
+        9: True,
 
     }
     return switcher.get(datasetInput,False)
@@ -107,11 +130,9 @@ def labelNormaliserMini(datasetInput):
 def labelNormaliserNum(datasetInput):
     datasetInput = int(datasetInput)
     switcher = {
-        46: 1,
-        26: 2,
-        45: 3,
-        76: 4,
-        42: 5,
+        46: 0,
+        76: 1,
+        9: 2,
 
     }
     return switcher.get(datasetInput,False)

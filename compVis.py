@@ -21,7 +21,7 @@ from keras.datasets import mnist
 
 width = 128
 height = 128
-nRowSetter = 1000
+nRowSetter = 2000
 
 
 
@@ -95,59 +95,11 @@ def createKerasModel():
 
         Flatten(), # Is it mandatory ? end to end conv2d ?
 
-        Dense(164, activation="softmax"),
+        Dense(3, activation="softmax"),
         #1000 -> loss 3.85 \ acc 0.09
     ])
-    """
-    model2 = Sequential([
-        base_model,
 
-        Conv2D(2048, (1, 1), activation="relu"),
-        Dropout(0.2),
-        Conv2D(1024, (1, 1), activation='relu'),
-        Dropout(0.2),
-        Conv2D(512, (1, 1), activation='relu'),
-        Dropout(0.2),
-        Conv2D(216, (1, 1), activation='relu'),
-
-        Flatten(),  # Is it mandatory ? end to end conv2d ?
-
-        Dense(164, activation="softmax"),
-    ])
-    """
-    """
-    model3 = Sequential([
-
-        keras.Input((28,28,1)),
-        Conv2D(32, kernel_size=(3, 3), activation="relu"),
-        MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, kernel_size=(3, 3), activation="relu"),
-        MaxPooling2D(pool_size=(2, 2)),
-        Flatten(),
-        Dropout(0.5),
-        Dense(27, activation="softmax"),
-
-
-
-
-
-    ])
-    """
-    """
-          Conv2D(1024, (2, 2), activation='relu'),
-
-          Conv2D(512, (1, 1), activation='relu'),
-
-          Conv2D(256, (1, 1), activation='relu'),
-
-          """
-
-
-
-    """ 
      
-    """
-
     return model
 
 
