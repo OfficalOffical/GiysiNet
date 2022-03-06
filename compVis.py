@@ -21,7 +21,7 @@ from keras.datasets import mnist
 
 width = 128
 height = 128
-nRowSetter = 2000
+nRowSetter = 1000
 
 
 
@@ -75,9 +75,20 @@ def createKerasModel():
                             include_top=False,
                             input_shape=(width, height, 3))
 
-    base_model.trainable = False
+    base_model.trainable = True
 
     model = Sequential([
+        base_model,
+
+        Flatten(),  # Is it mandatory ? end to end conv2d ?
+
+        Dense(164, activation="softmax"),
+        # 1000 -> loss 3.85 \ acc 0.09
+    ])
+
+
+    """ model = Sequential([
+    #128x128 acc %22
         keras.Input(shape=(width,height,3)),
         MaxPooling2D(pool_size=(2, 2)),
 
@@ -95,11 +106,15 @@ def createKerasModel():
 
         Flatten(), # Is it mandatory ? end to end conv2d ?
 
-        Dense(3, activation="softmax"),
+        Dense(164, activation="softmax"),
         #1000 -> loss 3.85 \ acc 0.09
-    ])
+    ])"""
 
-     
+
+
+
+
+
     return model
 
 
