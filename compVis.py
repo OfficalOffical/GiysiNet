@@ -1,5 +1,7 @@
 import cv2
+import keras
 import matplotlib.pyplot as plt
+import numpy
 from keras.applications.resnet_v2 import ResNet50V2
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
@@ -7,14 +9,15 @@ from sklearn.model_selection import train_test_split
 from keras.optimizers import adam_v2
 import pandas as pd
 import editCsv
+import numpy as np
 from scipy.spatial import distance
+from keras import backend as K
 
 
 
 width = 128
 height = 128
-nRowSetter = 10000
-
+nRowSetter = 1000
 
 
 
@@ -53,13 +56,18 @@ def getImageFromCSV(csvPath):
     modelKeras.compile(loss='sparse_categorical_crossentropy',optimizer= opt ,metrics=['sparse_categorical_accuracy'])
 
 
-    modelKeras.fit(trainX,trainY,epochs=15)
+    modelKeras.fit(trainX,trainY,epochs=10) # batch size 64 ?
 
-    modelKeras.evaluate(testX, testY)
+    evScore= modelKeras.evaluate(testX, testY)
 
 
 
     pp = modelKeras.predict(testX)
+
+
+
+
+
 
 
 
@@ -73,10 +81,29 @@ def getImageFromCSV(csvPath):
 
     bipbop = sorted(range(len(simPic)),key=lambda k:simPic[k])[1:6] #ilk 6 datayı sortlayıp yazdırıyor ilki kendisi olduğu için pass
 
+    #///////////
 
+    tempOut = [modelKeras.layers[3].output]
 
+    functors = [K.function([modelKeras.input], [out]) for out in tempOut]
 
+    test = testX[0][np.newaxis, ...]
 
+    layer_outs = [func([test]) for func in functors]
+
+    layer_outs = np.array(layer_outs)
+
+    layer_outs = layer_outs.reshape(-1)
+
+    """    plt.figure(figsize=(16, 4))
+    plt.plot(layer_outs)
+    plt.show()"""
+
+    print(layer_outs)
+
+    print("////////////////////////")
+
+    #///////////
 
 
     firstCon = cv2.hconcat([testX[whichPhoto], testX[bipbop[0]]])
@@ -88,6 +115,15 @@ def getImageFromCSV(csvPath):
 
     cv2.imshow("A",sumCon2)
     cv2.waitKey()
+
+
+    print("simpic : ",simPic)
+
+    print("shape : ",np.shape(simPic))
+
+    plt.figure(figsize=(32, 4))
+    plt.plot(simPic)
+    plt .show()
 
 
     plt.figure(figsize=(16,4))
@@ -125,15 +161,14 @@ def createKerasModel():
 
     model = Sequential([
         base_model,
-
         MaxPooling2D(pool_size=(2, 2)),
-
-
         Flatten(),  # Is it mandatory ? end to end conv2d ?
 
         Dense(164, activation="softmax"),
         # 1000 -> loss 3.85 \ acc 0.09
     ])
+
+
 
 
 
