@@ -19,7 +19,8 @@ from keras import backend as K
 
 width = 128
 height = 128
-nRowSetter = 1000
+nRowSetter = 10000
+
 
 
 
@@ -27,9 +28,7 @@ def getImageFromCSV(csvPath):
     csv,imarr = editCsv.getAndCleanCsv(csvPath,width,height,nRowSetter)
     modelKeras = createKerasModel()
 
-    plt.figure(figsize=(7, 25))
-    csv.categoryx_id.value_counts().sort_values().plot(kind='barh')
-    plt.show()
+
 
     trainX, testX, trainY, testY = train_test_split(imarr,csv["categoryx_id"],test_size=0.3,random_state=42)
     # u can devide it to 255 to make it 0-1 in further i guess dk
@@ -74,21 +73,27 @@ def getImageFromCSV(csvPath):
 
     whichPhoto = random.randint(1,((int(nRowSetter*0.3)-1)))
 
+
+
     simPic = [ distance.cosine(pp[whichPhoto],img )for img in pp] # 25. fotoyla cosine sim yapıyor
 
 
 
 
-    bipbop = sorted(range(len(simPic)),key=lambda k:simPic[k])
+    kipkop = sorted(range(len(simPic)),key=lambda k:simPic[k])
+
+    print("Index of the photo : ",whichPhoto)
 
 
 
 
-    #bipbop = createBipBop(fullbop,testY)
+    tempBipbop = sorted(range(len(simPic)), key=lambda k: simPic[k])[1:6]
 
-    #bipbop = sorted(range(len(simPic)), key=lambda k: simPic[k])[1:6] <<
+    bipbop = createBipBop(kipkop,testY)
 
-
+    print(tempBipbop)
+    print("beep beep")
+    print(bipbop)
 
     firstCon = cv2.hconcat([testX[whichPhoto], testX[bipbop[0]]])
     secCon = cv2.hconcat([testX[bipbop[1]], testX[bipbop[2]]])
@@ -103,7 +108,7 @@ def getImageFromCSV(csvPath):
 
 
     plt.figure(figsize=(16,4))
-    plt.plot(pp[25])
+    plt.plot(pp[whichPhoto])
     plt.show()
 
 
@@ -185,16 +190,26 @@ def createKerasModel():
 
 
 
-def createBipBop(fullbop,testY):
+def createBipBop(fullbop,testY): # name veriables like normal human beign at some point
 
-
+    tempCounter = 0;
 
     bipbop = [0,0,0,0,0]
-    maxAcc = [0,0,0,0,0]
-    for x in range(len(fullbop)):
-        classTemp = belongedClass(x)
-        if( fullbop[x] >= maxAcc[classTemp]):
-            maxAcc[classTemp] = fullbop[x]
+
+
+
+    for x in range(1,len(fullbop)):
+
+        tempClass = belongedClass(fullbop[x],testY,bipbop)
+        for y in range(len(bipbop)):
+            if(bipbop[tempClass] == 0):
+                bipbop[tempClass] = fullbop[x]
+                print(tempClass)
+                tempCounter += 1
+        if(tempCounter == 4):
+            break;
+
+    return bipbop
 
 
 
@@ -203,32 +218,47 @@ def createBipBop(fullbop,testY):
 
 
 
-    pass
 
-def belongedClass(temp):
 
-    print("AAAAAAAA")
-    print(temp)
+def belongedClass(temp,testY,bipbop):
 
-    """ # 0 clothing şunba bi bak
-    23 spor giyim
-    man clothing 85
-    teapods 126
-    juniors 127
-    129
-    145 Boys
-    146 Girls
-    """
+    valueToReturn = -1
+
+    temp = testY.iloc[temp]
+
+
+    #overLayer = [10,15,16,17,52,59,71,89,90,97,102,131,132]
+    #fullBody = [1,2,3,21,22,58,64,65,94,95,98,151,160,161,]
 
     accesories = [24,25,26,27,28,29,38,39,40,41,42,43,44,45,46,47,51,73,74,75,84,103,112,113,114,115,116,117,118,122,123,124,128,137,138,139,142,143,144,154,155,157,158,159]
-    top = [9,11,12,13,14,48,60,62,63,67,72,86,87,88,99,120,125,130,133,147,148,149,150,152,163]
-    overLayer = [10,15,16,17,52,59,71,89,90,97,102,131,132]
-    fullBody = [1,2,3,21,22,58,64,65,94,95,98,151,160,161,]
-    down = [4,5,6,7,8,18,19,20,53,54,55,56,57,61,66,68,69,70,91,92,93,96,100,101,119,121,129,134,135,153,162]
+    top = [0,9,11,12,13,14,48,60,62,63,67,72,86,87,88,99,120,125,130,133,147,148,149,150,152,163]
+    sumOfFullLayer = [0,1,2,3,10,15,16,17,21,22,23,52,58,59,64,65,71,89,90,94,95,97,98,102,126,127,131,132,145,146,151,160,161]
+    down = [0,4,5,6,7,8,18,19,20,53,54,55,56,57,61,66,68,69,70,91,92,93,96,100,101,119,121,129,134,135,153,162]
     shoes = [30,31,32,33,34,35,36,37,49,50,76,77,78,79,80,81,82,83,104,105,106,107,108,109,110,111,136,140,141,156]
 
+    for x in range(len(accesories)):
+        if(accesories[x] == temp ):
+            valueToReturn = 0
+    for x in range(len(top)):
+        if(top[x] == temp  ):
+            valueToReturn = 1
+    for x in range(len(sumOfFullLayer)):
+        if (sumOfFullLayer[x] == temp ):
+            valueToReturn = 2
+    for x in range(len(down)):
+        if (down[x] == temp ):
+            valueToReturn = 3
+    for x in range(len(shoes)):
+        if (shoes[x] == temp ):
+            valueToReturn = 4
 
-    return temp
+    if(valueToReturn == -1 ):
+        print("You forgot to implement : ",temp)
+
+
+
+    return valueToReturn
+
 
 
 
