@@ -5,19 +5,6 @@ import pandas
 import pandas as pd
 
 
-def notAvailable(newList, j):
-    newJ = ""
-    for k in range(len(j)):
-        if k > 0:
-            if k == 1:
-                newJ += str(j[k])
-            else:
-                newJ += " " + str(j[k])
-
-    for x in range(len(newList)):
-        if newList[x] == newJ:
-            return False
-    return True
 
 
 def getImageFromDest(datasetPath, csv, width, height):
@@ -70,9 +57,3 @@ def getAndCleanCsv(csvPath, w, h, nRowSetter):
 
 
 
-"""
-a = [141,99,95,107,63,106,84,150,127,100,100,103,149,89,96,49,119,71,94,144,142,67,
-     140,23,48,136,151,111,126,90,114,92,93,133,70,138,86,120,158,65,87,125,112,22,
-     155,108,82,75,41,159,156,145,64,62,137,131,143,153,55,109,135,115,163,128,123,
-     83,157,72,54,85]
-"""

@@ -5,13 +5,23 @@ datasetPath = "E:/db"
 csvPath = "C:/Users/Sefa/Desktop/outfit_data_cleaned.csv"
 
 
-#mode = input("Please enter the mode 1 for random 2 for advice ?  << burayı düzelt ")
-#mode = 1
 
-a = getImageFromCSV(csvPath)
+tempHolder = 0
+mode = 2
+
+"""
+while ( tempHolder == 0):
+    mode = int(input( "Aynı kategoride benzerlik tavsiyesi için 1 farklı kategorilerde ilişkisel tavsiye için lütfen 2 girdisi veriniz : "))
+    if(mode != 1 or mode != 2):
+        tempHolder = 1"""
 
 
-#b = cleaningProcess(csvPath)
+a = getImageFromCSV(csvPath,mode )
+
+
+
+
+
 
 
 
