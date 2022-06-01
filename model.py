@@ -12,13 +12,12 @@ from matplotlib import pyplot as plt
 from scipy.spatial import distance
 from sklearn.model_selection import train_test_split
 from keras import backend as K
-from torch import cuda
 import numpy as np
 
 width = 224
 height = 224
 epochNumber = 40
-nRowSetter = 20000
+nRowSetter = 2000
 
 whichPhoto = randint(1, ((int(nRowSetter * 0.3) - 1)))
 
@@ -29,11 +28,11 @@ whichPhoto = randint(1, ((int(nRowSetter * 0.3) - 1)))
 def mainModel(csv,img,mode):
 
 
-
+    cv2.imshow("Template", cv2.imread("Template.png"))
 
     trainX, testX, trainY, testY = train_test_split(img, csv , test_size=0.3, random_state=42)
 
-    """if mode == 3:
+    if mode == 3:
         evScoreVGG, imHolderVGG, imHolderVGGEarly = runKerasVGGModel(trainX, testX, trainY, testY, mode)
         print("VGG        |", evScoreVGG[1])
         cv2.imshow("VGG", imHolderVGG)
@@ -61,7 +60,7 @@ def mainModel(csv,img,mode):
         del(evScoreOwn,imHolderOwn)
         gc.collect()
 
-        evScoreResNet, imHolderResnet,imHolderResnetEarly = runResnetKerasModel(trainX, testX, trainY, testY, mode)
+        """evScoreResNet, imHolderResnet,imHolderResnetEarly = runResnetKerasModel(trainX, testX, trainY, testY, mode)
 
         print("Own Model  |", evScoreResNet[1])
         cv2.imshow("Own Model", imHolderResnet)
@@ -70,7 +69,7 @@ def mainModel(csv,img,mode):
 
         cv2.waitKey()"""
 
-    runResnetKerasModel(trainX, testX, trainY, testY, mode)
+
 
 
 

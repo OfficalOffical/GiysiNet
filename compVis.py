@@ -4,7 +4,7 @@ from model import mainModel
 
 width = 224
 height = 224
-nRowSetter = 20000 #modelde de manuel gir
+nRowSetter = 2000 #modelde de manuel gir
 
 def getImageFromCSV(csvPath,mode):
 
