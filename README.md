@@ -1,4 +1,4 @@
-# GiysiNet
+# GiysiNet AI-Powered Outfit Recommendation System
 
 GiysiNet is a Python library for creating outfit recommendations with deep learning models. This app has four different models. AlexNet, Resnet, VGGNet, GiysiNet.
 The project compares both softmax outputs and early CNN layer outputs. The csv and label files can be found in the Files 
