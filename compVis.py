@@ -15,8 +15,3 @@ def getImageFromCSV(csvPath,mode):
 
 
     return csv
-
-
-
-
-
